@@ -11,19 +11,22 @@
 (function ($) {
   $.ageCheck = function (options) {
     const settings = $.extend({
-      minAge: 21,
+      minAge: 18,
       redirectTo: '',
       redirectOnFail: '',
-      title: 'Age Verification',
-      copy: 'This Website requires you to be [21] years or older to enter. Please enter your Date of Birth in the fields below in order to continue:',
+      title: "Confirmation de l'âge",
+      copy: 'Vous devez avoir <b>18+</b> ans pour continuer,<br /> veuillez indiquer votre date de naissance :',
       successMsg: {
-        header: 'Success!',
-        body: 'You are now being redirected back to the application...'
+        header: "C'est bon pour cette fois",
+        body: 'Redirection dans quelques instants ...'
       },
-      underAgeMsg: 'Sorry, you are not old enough to view this site...',
+      underAgeMsg: {
+        header: '<text style="color: red;">Vous ne passerez pas !</text>',
+        body: 'Redirection vers la version pour enfants ...'
+      },
       errorMsg: {
-        invalidDay: 'Day is invalid or empty',
-        invalidYear: 'Year is invalid or empty'
+        invalidDay: 'Jour invalide',
+        invalidYear: 'Année invalide'
       }
     }, options);
 
@@ -132,19 +135,31 @@
                 window.location.replace(settings.redirectTo);
               } else {
                 $('.ac-overlay, .ac-container').remove();
+                window.location.href = 'https://fr.wikipedia.org/wiki/Sp%C3%A9cial:Page_au_hasard';
               }
             });
           });
         }, 2000);
       },
       handleUnderAge() {
-        const underAgeMsg = `<h3>${settings.underAgeMsg}</h3>`;
+        const underAgeMsg = `<h3>${settings.underAgeMsg.header}</h3><p>${settings.underAgeMsg.body}</p>`;
         $('.ac-container').html(underAgeMsg);
-        if (settings.redirectOnFail !== '') {
-          setTimeout(() => {
-            window.location.replace(settings.redirectOnFail);
-          }, 2000);
-        }
+        setTimeout(() => {
+          $('.ac-container').animate({
+            top: '-350px',
+          }, 200, () => {
+            $('.ac-overlay').animate({
+              opacity: '0',
+            }, 500, () => {
+              if (settings.redirectTo !== '') {
+                window.location.replace(settings.redirectTo);
+              } else {
+                $('.ac-overlay, .ac-container').remove();
+                window.location.href = 'https://fr.wikipedia.org/wiki/Sp%C3%A9cial:Page_au_hasard';
+              }
+            });
+          });
+        }, 2000);
       },
     }; // end _this
 
